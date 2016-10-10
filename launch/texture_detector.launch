@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch>
+
+  <arg name="sample_image" value="$(find pal_texture_detector)/objects/pal_poster.png" />
+  <arg name="rectified_image" default="" />
+  <arg name="camera_info" default="" />
+
+  <node name="texture_detector" pkg="pal_texture_detector" type="pal_texture_detector_node" args="$(arg sample_image)" output="screen">
+    <remap from="rectified_image" to="$(arg rectified_image)"/>
+    <remap from="camera_info"     to="$(arg camera_info)"/>
+    <rosparam>
+      enable_ratio_test:     True
+      enable_homography:     True
+      homography_iterations: 2
+      estimate_pose:         True
+      object_width:          0.5     <!-- in meters. Only required if estimate_pose is True -->
+      object_height:         0.64    <!-- in meters. Only required if estimate_pose is True -->
+    </rosparam>
+  </node>
+</launch>
+
