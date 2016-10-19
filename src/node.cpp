@@ -135,6 +135,7 @@ TextureDetectorNode::TextureDetectorNode(ros::NodeHandle& nh,
   bool enableHomography     = true;
   int  homographyIterations = 2;
   double objectWidth(0), objectHeight(0);
+  bool showDebugImages      = false;
   _pnh.getParam("enable_ratio_test", enableRatioTest);
   _pnh.getParam("enable_homography", enableHomography);
   _pnh.getParam("homography_iterations", homographyIterations);
@@ -152,6 +153,8 @@ TextureDetectorNode::TextureDetectorNode(ros::NodeHandle& nh,
   if ( _estimatePose )
     ROS_INFO_STREAM("Planar object width:       " << objectWidth << " m  height: " << objectHeight);
 
+  _pnh.getParam("enable_visual_debug", showDebugImages);
+
   std::vector<double> scales;  
   scales.push_back(1.0);
 
@@ -160,7 +163,7 @@ TextureDetectorNode::TextureDetectorNode(ros::NodeHandle& nh,
                                            enableRatioTest,
                                            enableHomography,
                                            homographyIterations,
-                                           false));
+                                           showDebugImages));
 
   image_transport::TransportHints transportHint("raw");
   _imageSub   = _imageTransport.subscribe("rectified_image", 1, &TextureDetectorNode::imageCallback, this, transportHint);

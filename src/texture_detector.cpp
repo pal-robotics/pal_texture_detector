@@ -135,6 +135,7 @@ namespace pal {
     bool _estimateHomography;
     int _homographyIterations;
     cv::Mat _homography; //3x3 homography transforming pixels from the pattern image to the query image
+    bool _lookingMatchesInWrappedImg;
     bool _showDebug;
 
   };
@@ -152,6 +153,7 @@ namespace pal {
     _useRatioTest(useRatioTest),
     _estimateHomography(estimateHomography),
     _homographyIterations(homographyIterations),
+    _lookingMatchesInWrappedImg(false),
     _showDebug(showDebug)
   {
     if ( _scales.empty() )
@@ -362,8 +364,10 @@ namespace pal {
       cv::Mat debugImg;
       cv::drawMatches(img, keypoints, _targetScaled[bestTargetScaleIdx], _targetKeypoints[bestTargetScaleIdx], matches, debugImg);
 
-      cv::imshow("robust matches", debugImg);
-      cv::waitKey(25);
+      std::string sufix = " in original image";
+      if ( _lookingMatchesInWrappedImg )
+        sufix = " in wrapped image";
+      cv::imshow("robust matches " + sufix, debugImg);
     }
 
     return !matches.empty();
@@ -435,6 +439,7 @@ namespace pal {
 
     //first find matches between the query image and the target image at different scales,
     //using cross-filter or ratio-filter and then homography filtering if enabled
+    _lookingMatchesInWrappedImg = false;
     bool found = computeRobustMatches(imgGray, USE_ALL_SCALES,
                                       keypoints, bestTargetScale,
                                       matches, _estimateHomography, _homography);
@@ -455,6 +460,7 @@ namespace pal {
 
         cv::Mat refinedHomography;
 
+        _lookingMatchesInWrappedImg = true;
         found = warpImageAndDetect(imgGray, _homography,
                                    bestTargetScale, matches, refinedHomography);
 
@@ -496,6 +502,7 @@ namespace pal {
                             _homography, _targetScaled[bestTargetScale].size(),
                             cv::WARP_INVERSE_MAP | cv::INTER_CUBIC);
         cv::imshow("final refined warped image", imgGrayWarped);
+        cv::waitKey(250);
       }
     }
 
