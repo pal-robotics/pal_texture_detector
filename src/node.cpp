@@ -216,7 +216,7 @@ void TextureDetectorNode::getCameraIntrinsics()
   _cameraMatrix.at<float>(1,0) =            0; _cameraMatrix.at<float>(1,1) = msg->P[5]; _cameraMatrix.at<float>(1,2) = msg->P[6];
   _cameraMatrix.at<float>(2,0) =            0; _cameraMatrix.at<float>(2,1) =         0; _cameraMatrix.at<float>(2,2) =         1;
   //rectified image has no distortion
-  _distCoeff = cv::Mat::zeros(1, 4, CV_32F);
+  _distCoeff = cv::Mat(1, 4, CV_32F, cv::Scalar(0.00001));
 }
 
 
