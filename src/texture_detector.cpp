@@ -125,8 +125,8 @@ namespace pal {
                             cv::Mat& newHomography);
 
 
-    cv::Ptr<cv::FeatureDetector> _featureDetector;
-    cv::Ptr<cv::DescriptorExtractor> _descriptorExtractor;
+    cv::Ptr<cv::Feature2D> _featureDetector;
+    cv::Ptr<cv::Feature2D> _descriptorExtractor;
     std::vector< std::vector<cv::KeyPoint> > _targetKeypoints;
     std::vector< cv::Ptr<cv::DescriptorMatcher> > _descriptorMatcher;
     std::vector< cv::Mat > _targetScaled;
@@ -147,8 +147,8 @@ namespace pal {
                                            bool estimateHomography,
                                            int homographyIterations,
                                            bool showDebug):
-    _featureDetector( new cv::ORB(2000) ),
-    _descriptorExtractor( new cv::ORB(2000) ),
+    _featureDetector( cv::ORB::create() ),
+    _descriptorExtractor( cv::ORB::create() ),
     _scales(scales),
     _useRatioTest(useRatioTest),
     _estimateHomography(estimateHomography),
@@ -525,16 +525,16 @@ namespace pal {
     if ( found )
     {
       std::vector<cv::Point3f> objectPoints;
-      objectPoints.push_back( cv::Point3f(-objectSize.width/2, -objectSize.height/2,0) );
+      objectPoints.push_back( cv::Point3f(-objectSize.width/2, -objectSize.height/2, 0) );
       objectPoints.push_back( cv::Point3f( objectSize.width/2, -objectSize.height/2, 0) );
       objectPoints.push_back( cv::Point3f( objectSize.width/2,  objectSize.height/2, 0) );
-      objectPoints.push_back( cv::Point3f(-objectSize.width/2,  objectSize.height/2,0) );
+      objectPoints.push_back( cv::Point3f(-objectSize.width/2,  objectSize.height/2, 0) );
 
       cv::Mat rvec, tvec;
-      cv::solvePnP(objectPoints, roi,
+      cv::solvePnPRansac(objectPoints, roi,
                    cameraMatrix, distCoeff,
                    rvec, tvec,      //These matrices are returned as CV_64F
-                   false, CV_P3P);
+                   false, 100, 8.0, 0.9, cv::noArray(), cv::SOLVEPNP_P3P);
 
       cv::Mat rotation;
       cv::Rodrigues(rvec, rotation);

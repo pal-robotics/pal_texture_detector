@@ -9,7 +9,7 @@ find_package(catkin REQUIRED COMPONENTS
   pal_detection_msgs
   geometry_msgs  
 )
-
+find_package(OpenCV REQUIRED)
 
 catkin_package(
   INCLUDE_DIRS include
@@ -17,17 +17,16 @@ catkin_package(
   CATKIN_DEPENDS roscpp roslib pal_detection_msgs geometry_msgs cv_bridge image_transport
 )
 
-include_directories(include
-                    ${catkin_INCLUDE_DIRS}
-)
+include_directories(include)
+include_directories(SYSTEM ${catkin_INCLUDE_DIRS} ${OpenCV_INCLUDE_DIRS})
 
 add_library(pal_texture_detector src/texture_detector.cpp)
-target_link_libraries(pal_texture_detector ${catkin_LIBRARIES})
+target_link_libraries(pal_texture_detector ${catkin_LIBRARIES} ${OpenCV_LIBRARIES})
 
 
 add_executable(pal_texture_detector_node src/node.cpp)
-target_link_libraries(pal_texture_detector_node pal_texture_detector ${catkin_LIBRARIES})
 add_dependencies(pal_texture_detector_node pal_detection_msgs_generate_messages_cpp)
+target_link_libraries(pal_texture_detector_node pal_texture_detector ${catkin_LIBRARIES} ${OpenCV_LIBRARIES})
 
 
 install(TARGETS pal_texture_detector 
