@@ -209,7 +209,7 @@ void TextureDetectorNode::getCameraIntrinsics()
   ROS_INFO("Ok");
 
 
-  _cameraMatrix = cv::Mat::zeros(3,3, CV_32F);
+  _cameraMatrix = cv::Mat::zeros(3,3, CV_32FC1);
 
   //get focal lengths and image centre from P matrix
   _cameraMatrix.at<float>(0,0) =    msg->P[0]; _cameraMatrix.at<float>(0,1) =         0; _cameraMatrix.at<float>(0,2) = msg->P[2];

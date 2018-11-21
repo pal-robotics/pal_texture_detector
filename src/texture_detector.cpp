@@ -531,10 +531,10 @@ namespace pal {
       objectPoints.push_back( cv::Point3f(-objectSize.width/2,  objectSize.height/2, 0) );
 
       cv::Mat rvec, tvec;
-      cv::solvePnP(objectPoints, roi,
+      cv::solvePnPRansac(objectPoints, roi,
                    cameraMatrix, distCoeff,
                    rvec, tvec,      //These matrices are returned as CV_64F
-                   false, cv::SOLVEPNP_P3P);
+                   false, 100, 8.0, 0.9, cv::noArray(), cv::SOLVEPNP_P3P);
 
       cv::Mat rotation;
       cv::Rodrigues(rvec, rotation);
