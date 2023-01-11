@@ -286,7 +286,7 @@ namespace pal {
 
     homography = cv::findHomography(srcPoints,
                                     dstPoints,
-                                    CV_FM_RANSAC,
+                                    cv::FM_RANSAC,
                                     MAX_REPROJECTION_ERROR,
                                     inliersMask);
 
@@ -377,7 +377,7 @@ namespace pal {
                                          cv::Mat& imgGray)
   {
     if ( img.channels() == 3 )
-      cv::cvtColor(img, imgGray, CV_BGR2GRAY);
+      cv::cvtColor(img, imgGray, cv::COLOR_BGR2GRAY);
     else
       imgGray = img.clone();
   }
