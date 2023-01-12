@@ -236,7 +236,7 @@ void TextureDetectorNode::convert(cv::Mat& img, sensor_msgs::CompressedImage& co
   //compression settings
   std::vector<int> params;
   params.resize(3, 0);
-  params[0] = CV_IMWRITE_JPEG_QUALITY;
+  params[0] = cv::IMWRITE_JPEG_QUALITY;
   params[1] = 80; //jpeg quality
   if ( !cv::imencode(".jpg", img, compressedImg.data, params) )
     ROS_ERROR("Error in TextureDetectorNode::convert: cv::imencode failed");
